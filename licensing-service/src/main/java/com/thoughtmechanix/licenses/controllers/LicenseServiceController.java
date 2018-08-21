@@ -3,6 +3,9 @@ package com.thoughtmechanix.licenses.controllers;
 import com.thoughtmechanix.licenses.config.ServiceConfig;
 import com.thoughtmechanix.licenses.model.License;
 import com.thoughtmechanix.licenses.services.LicenseService;
+import com.thoughtmechanix.licenses.utils.UserContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value="v1/organizations/{organizationId}/licenses")
-public class LicenseServerController
+public class LicenseServiceController
 {
+    private static final Logger logger = LoggerFactory.getLogger(LicenseServiceController.class);
+
     @Autowired
     private LicenseService licenseService;
 
@@ -22,6 +27,8 @@ public class LicenseServerController
     @RequestMapping(value="/", method = RequestMethod.GET)
     public List<License> getLicenses(@PathVariable("organizationId") String organizationId)
     {
+        logger.debug("LicenseServiceController Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
+
         return licenseService.getLicensesByOrg(organizationId);
     }
 
